@@ -5,16 +5,17 @@ import time
 from datetime import datetime
 from datetime import timedelta
 
-__version_ = "test_bot_001"
+__version_ = "test_bot_002"
 __author__ = "hyperscroll"
 
-bot = commands.Bot(command_prefix='.')
-bot.run('put your token here')
+# command prefix/bot mentioning in order to give a command
+bot = commands.Bot(command_prefix=commands.when_mentioned_or('.'))
+bot.run('<put your token here>')
 
 # VARIABLES
-last_update = datetime(2020, 6, 9, 21, 20, 00)
+last_update = datetime(2020, 10, 1, 15, 20, 00)
 
-# PATHS
+# PATHS to files
 IMG = 'media/image/'
 AUDIO = 'media/audio/'
 ffmpeg_exec = "C:/ffmpeg/bin/ffmpeg.exe"
@@ -38,10 +39,21 @@ emojis = {
     "check": "✅",
     "B": "🅱️",
     "love": "♥️",
+    "square": "▫️"
 }
 
-#"CHANGELOG"
+#MOTD
 update_motd = f"""I have new features. Check .help sound"""
+
+# CHANGELOG TABLE. More in scheme_commandUtilities cog.
+changelog_content = {
+    "update_name": "Cogs update",
+    "update_date": f"{str(last_update)}",
+    "version": f"{__version_}",
+    "update_content": f"""
+    {emojis["square"]} Finally using cogs! Check .help for more
+    """
+}
 
 
 # STANDARD BOT EVENTS
@@ -122,21 +134,10 @@ async def leave(ctx):
     time.sleep(3)
     await server.disconnect()
 
-# PIC
-@bot.command(
-    name="pic",
-    usage=list(pictures.keys()),
-    description="Post a picture",
-    aliases=["p", "P", "PIC"])
-async def pic(ctx, arg):
-    await ctx.send(file=discord.File(random.choice(pictures[arg.lower()])))
+# PIC was moved to scheme_commandFun cog
 
-# SOUND
-@bot.command(
-    name="sound",
-    usage=list(sounds.keys()),
-    description="Play some sounds",
-    aliases=["s", "S", "SOUND"])
-async def sound(ctx, arg):
-    vc = ctx.guild.voice_client
-    vc.play(discord.FFmpegPCMAudio(executable=ffmpeg_exec, source=random.choice(sounds[arg.lower()])))
+# SOUND was moved to scheme_commandFun cog
+
+#important lines to LOAD COGS
+bot.load_extension("cogs.scheme_commandUtilities")
+bot.load_extension("cogs.scheme_commandFun")
